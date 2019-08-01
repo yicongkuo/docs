@@ -2,7 +2,7 @@
 
 這是一份持續更新的技術文件，用來紀錄工作中所見所聞，讓未來的自己能從過去經驗中改善工作效率，甚至啟發創新靈感。
 
-此份技術文件盡可能採用[靜態文件生產技術](https://www.staticgen.com/)製作，您若想在離線環境中使用此份文件中的內容，可將整個儲存庫[下載](https://github.com/yicongkuo/docs/archive/gh-pages.zip)到本機電腦上，並掛載到電腦的網頁伺服器如：IIS、Apache、Nginx上，即可獲得與線上版相同的閱讀體驗!
+此份技術文件盡可能採用[靜態文件生產技術](https://www.staticgen.com/)中的[docsify](https://docsify.js.org/#/zh-cn/quickstart)製作，您若想在離線環境中使用此份文件中的內容，可將整個儲存庫[下載](https://github.com/yicongkuo/docs/archive/gh-pages.zip)到本機電腦上，並掛載到電腦的網頁伺服器如：IIS、Apache、Nginx上，即可獲得與線上版相同的閱讀體驗!
 
 ## 文件分類
 
