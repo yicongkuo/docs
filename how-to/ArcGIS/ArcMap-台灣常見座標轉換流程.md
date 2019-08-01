@@ -24,6 +24,7 @@
 
 2. 依照以下資料輸入對應的參數值，並點選 「OK」 即可建立完成
 
+
   | 參數名稱                              | 參數值               |
   |-------------------------------------  |-------------------- |
   | Geographic Transformation Name        | TWD67 -- TWD97      |
@@ -31,16 +32,20 @@
   | Output Geographic Coordinate System   | TWD_1997_TM_Taiwan  |
   | Method                                | Coordinate Frame    |
 
+
   【轉換參數】
 
-  | X Axis Translation (meters)   | X軸平移量(公尺)   | 730.160                             |
+
+  | 參數名稱   | 參數說明   | 參數值                             |
   |-----------------------------  |-----------------  |------------------------------------ |
+  | X Axis Translation (meters)   | X軸平移量(公尺)   | 730.160                             |
   | Y Axis Translation (meters)   | Y軸平移量(公尺)   | 346.212                             |
   | Z Axis Translation (meters)   | Z軸平移量(公尺)   | 472.186                             |
   | X Axis Rotation (seconds)     | X軸旋轉量(秒)    | 7.968009465325332199694565793688    |
   | Y Axis Rotation (seconds)     | Y軸旋轉量(秒)    | 3.5498173155125282722429064796627   |
   | Z Axis Rotation (seconds)     | Z軸旋轉量(秒)    | 0.40634166830677981965825251394163  |
   | Scale Difference (ppm)        | 尺度參數          | 0.99998180                          |
+
 
   ![](./images/ArcMap-台灣常見座標轉換流程/image3.png)
 
@@ -60,6 +65,7 @@
 
 2. 依照以下資料輸入對應的參數值，並點選 「OK」 即可建立完成
 
+
   | 參數名稱                              | 參數值                   |
   |-------------------------------------  |------------------------ |
   | Geographic Transformation Name        | TWD97 -- WGS84          |
@@ -67,13 +73,16 @@
   | Output Geographic Coordinate System   | GCS_WGS_1984            |
   | Method                                | GEOCENTRIC_TRANSLATION  |
 
+
   【轉換參數】
+
 
   | Name                          | Value   |
   |-----------------------------  |-------  |
   | X Axis Translation (meters)   | 0       |
   | Y Axis Translation (meters)   | 0       |
   | Z Axis Translation (meters)   | 0       |
+
 
 ### 轉換方法與參數說明
 
