@@ -57,18 +57,22 @@
   };
 </script>
 
-  <meta name="description" content="How-to系列">
-<meta name="keywords" content="how-to, 怎麼做">
-<meta property="og:type" content="website">
-<meta property="og:title" content="How-to系列">
-<meta property="og:url" content="https://docs.yicong.tw/index.html">
+  <meta name="description" content="本文將介紹如何使用PostgreSQL，在本機電腦上建置一個可以隨時帶著走的地理資料庫，方便程式開發階段或是教學階段時使用。">
+<meta name="keywords" content="地理資料庫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用免安裝版的PostgresSQL建立空間資料庫">
+<meta property="og:url" content="https://docs.yicong.tw/posts/PostgreSQL/cjytob9g90002lc5gskda2n6d/index.html">
 <meta property="og:site_name" content="How-to系列">
-<meta property="og:description" content="How-to系列">
+<meta property="og:description" content="本文將介紹如何使用PostgreSQL，在本機電腦上建置一個可以隨時帶著走的地理資料庫，方便程式開發階段或是教學階段時使用。">
 <meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="http://i.imgur.com/uQFnqql.png">
+<meta property="og:image" content="https://i.imgur.com/iaqPryV.png">
+<meta property="og:updated_time" content="2019-08-02T05:05:00.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="How-to系列">
-<meta name="twitter:description" content="How-to系列">
-  <link rel="canonical" href="https://docs.yicong.tw/">
+<meta name="twitter:title" content="使用免安裝版的PostgresSQL建立空間資料庫">
+<meta name="twitter:description" content="本文將介紹如何使用PostgreSQL，在本機電腦上建置一個可以隨時帶著走的地理資料庫，方便程式開發階段或是教學階段時使用。">
+<meta name="twitter:image" content="http://i.imgur.com/uQFnqql.png">
+  <link rel="canonical" href="https://docs.yicong.tw/posts/PostgreSQL/cjytob9g90002lc5gskda2n6d/">
 
 
 <script id="page.configurations">
@@ -77,7 +81,7 @@
   };
 </script>
 
-  <title>How-to系列</title>
+  <title>使用免安裝版的PostgresSQL建立空間資料庫 | How-to系列</title>
   
 
 
@@ -116,7 +120,7 @@
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-TW">
 
-  <div class="container sidebar-position-left page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -207,130 +211,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
-      
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://docs.yicong.tw/how-to/posts/ArcGIS/ArcMap/cjytob9fq0000lc5gkntcz08u/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yi-Cong, Kuo">
-      <meta itemprop="description" content="How-to系列">
-      <meta itemprop="image" content="/how-to/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="How-to系列">
-    </span>
-      <header class="post-header">
-
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/how-to/posts/ArcGIS/ArcMap/cjytob9fq0000lc5gkntcz08u/" class="post-title-link" itemprop="url">ArcMap 台灣常見座標轉換流程</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">發表於</span>
-              
-
-              
-                
-              
-
-              <time title="創建時間：2019-07-26 14:11:35" itemprop="dateCreated datePublished" datetime="2019-07-26T14:11:35+08:00">2019-07-26</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新於</span>
-                
-                <time title="修改時間：2019-08-02 13:34:01" itemprop="dateModified" datetime="2019-08-02T13:34:01+08:00">2019-08-02</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分類於</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/how-to/categories/ArcGIS/" itemprop="url" rel="index"><span itemprop="name">ArcGIS</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/how-to/categories/ArcGIS/ArcMap/" itemprop="url" rel="index"><span itemprop="name">ArcMap</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          <br>
-
-        </div>
-      </header>
-
+  <div id="posts" class="posts-expand">
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在ArcToolbox中有個 「<strong>Create Custom Geographic Transformation</strong>」 工具，可以提供使用者自訂座標系統轉換參數。台灣的使用者可以透過該工具自訂TWD67、TWD97、WGS84三種常見座標系統的轉換參數，設定好的轉換參數檔案(*.gtf)預設放在以下目錄，使用者可以自行複製到其他電腦使用。</p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/how-to/posts/ArcGIS/ArcMap/cjytob9fq0000lc5gkntcz08u/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
-      
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -351,10 +234,8 @@
       <header class="post-header">
 
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/how-to/posts/PostgreSQL/cjytob9g90002lc5gskda2n6d/" class="post-title-link" itemprop="url">使用免安裝版的PostgresSQL建立空間資料庫</a>
+          <h1 class="post-title" itemprop="name headline">使用免安裝版的PostgresSQL建立空間資料庫
+
               
             
           </h1>
@@ -417,18 +298,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>本文將介紹如何使用<code>PostgreSQL</code>，在本機電腦上建置一個可以隨時帶著走的地理資料庫，方便程式開發階段或是教學階段時使用。</p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/how-to/posts/PostgreSQL/cjytob9g90002lc5gskda2n6d/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
+        <p>本文將介紹如何使用<code>PostgreSQL</code>，在本機電腦上建置一個可以隨時帶著走的地理資料庫，方便程式開發階段或是教學階段時使用。</p>
+<a id="more"></a>
+
+<h2 id="《1》-檢查ArcGIS支援哪一個版本的PostgreSQL"><a href="#《1》-檢查ArcGIS支援哪一個版本的PostgreSQL" class="headerlink" title="《1》 檢查ArcGIS支援哪一個版本的PostgreSQL"></a>《1》 檢查ArcGIS支援哪一個版本的PostgreSQL</h2><ol>
+<li><p>先到<a href="http://desktop.arcgis.com/en/system-requirements/latest/database-requirements-postgresql.htm" target="_blank" rel="noopener">ArcGIS Help頁面</a>選擇你要使用的ArcGIS版本</p>
+<p><img src="http://i.imgur.com/uQFnqql.png" alt="選擇你要使用的ArcGIS版本"></p>
+</li>
+<li><p>查詢有支援的最小版本</p>
+<p><img src="https://i.imgur.com/iaqPryV.png" alt="查詢支援度"></p>
+</li>
+</ol>
+<h2 id="《2》-下載PostgresSQL"><a href="#《2》-下載PostgresSQL" class="headerlink" title="《2》 下載PostgresSQL"></a>《2》 下載PostgresSQL</h2><ol>
+<li><p><a href="https://www.postgresql.org/download/windows/" target="_blank" rel="noopener">連到PostgreSQL官方網站</a></p>
+</li>
+<li><p>點選<a href="https://www.enterprisedb.com/download-postgresql-binaries" target="_blank" rel="noopener">zip archive</a></p>
+</li>
+<li><p>選擇適合的版本下載  </p>
+</li>
+</ol>
+<h2 id="讓PostgreSQL具有儲存空間資料的能力"><a href="#讓PostgreSQL具有儲存空間資料的能力" class="headerlink" title="讓PostgreSQL具有儲存空間資料的能力"></a>讓PostgreSQL具有儲存空間資料的能力</h2><ol>
+<li><p>在ArcMap預設安裝目錄下，找到DatabaseSupport資料夾，預設安裝路徑為<code>C:\Program Files (x86)\ArcGIS\Desktop版本號碼\DatabaseSupport</code></p>
+</li>
+<li><p>找到PostgreSQL資料夾，然後依據你下載的版本，進入該版本的資料夾，然後再進入Windows64資料夾</p>
+</li>
+<li><p>複製資料夾中的<code>st_geometry.dll</code>以及<code>libst_raster_pg.dll</code>，到 <strong>PostgresSQL資料夾/lib</strong> 中</p>
+</li>
+</ol>
+<h2 id="初始化你的PostgreSQL"><a href="#初始化你的PostgreSQL" class="headerlink" title="初始化你的PostgreSQL"></a>初始化你的PostgreSQL</h2><p>將以下程式碼複製到文字檔中，然後副檔案改成.bat儲存。然後執行這個批次檔。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@ECHO ON</span><br><span class="line">REM The script sets environment variables helpful <span class="keyword">for</span> PostgreSQL</span><br><span class="line">@SET PATH=<span class="string">"%~dp0\bin"</span>;%PATH%</span><br><span class="line">@SET PGDATA=%~dp0\data</span><br><span class="line">@SET PGDATABASE=postgres</span><br><span class="line">@SET PGUSER=postgres</span><br><span class="line">@SET PGPORT=5432</span><br><span class="line">@SET PGLOCALEDIR=%~dp0\share\locale</span><br><span class="line"></span><br><span class="line">REM remark after first run</span><br><span class="line">rem <span class="string">"%~dp0\bin\initdb"</span> -U postgres -A trust</span><br><span class="line"></span><br><span class="line"><span class="string">"%~dp0\bin\pg_ctl"</span> -D <span class="string">"%~dp0/data"</span> -l logfile start</span><br><span class="line">ECHO <span class="string">"Click enter to stop"</span></span><br><span class="line">pause</span><br><span class="line"><span class="string">"%~dp0\bin\pg_ctl"</span> -D <span class="string">"%~dp0/data"</span> stop</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -436,7 +334,25 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
+          
+        
+        <div class="post-tags">
+            <a href="/how-to/tags/地理資料庫/" rel="tag"># 地理資料庫</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/how-to/posts/ArcGIS/ArcMap/cjytob9fq0000lc5gkntcz08u/" rel="prev" title="ArcMap 台灣常見座標轉換流程">
+                ArcMap 台灣常見座標轉換流程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
     </footer>
   </div>
   
@@ -444,14 +360,12 @@
   
   </article>
 
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
           
+
 
         </div>
           
@@ -466,8 +380,17 @@
 
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概要
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
 
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -522,6 +445,23 @@
 
         </div>
       </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#《1》-檢查ArcGIS支援哪一個版本的PostgreSQL"><span class="nav-number">1.</span> <span class="nav-text">《1》 檢查ArcGIS支援哪一個版本的PostgreSQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#《2》-下載PostgresSQL"><span class="nav-number">2.</span> <span class="nav-text">《2》 下載PostgresSQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#讓PostgreSQL具有儲存空間資料的能力"><span class="nav-number">3.</span> <span class="nav-text">讓PostgreSQL具有儲存空間資料的能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化你的PostgreSQL"><span class="nav-number">4.</span> <span class="nav-text">初始化你的PostgreSQL</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
     </div>
   </aside>
@@ -574,6 +514,10 @@
 
 
   
+  <script src="/how-to/js/scrollspy.js?v=7.3.0"></script>
+<script src="/how-to/js/post-details.js?v=7.3.0"></script>
+
+
 
   <script src="/how-to/js/next-boot.js?v=7.3.0"></script>
 
