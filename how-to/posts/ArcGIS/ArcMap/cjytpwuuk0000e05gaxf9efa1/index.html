@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/how-to/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/how-to/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/how-to/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/how-to/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/how-to/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/how-to/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/how-to/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: true,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/how-to/',
+      path: ''
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '複製',
+      copy_success: '複製成功',
+      copy_failure: '複製失敗'
+    }
+  };
+</script>
+
+  <meta name="description" content="在ArcToolbox中有個 「Create Custom Geographic Transformation」 工具，可以提供使用者自訂座標系統轉換參數。台灣的使用者可以透過該工具自訂TWD67、TWD97、WGS84三種常見座標系統的轉換參數，設定好的轉換參數檔案(*.gtf)預設放在以下目錄，使用者可以自行複製到其他電腦使用。">
+<meta name="keywords" content="座標轉換">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ArcMap 台灣常見座標轉換流程">
+<meta property="og:url" content="https://docs.yicong.tw/posts/ArcGIS/ArcMap/cjytpwuuk0000e05gaxf9efa1/index.html">
+<meta property="og:site_name" content="How-to系列">
+<meta property="og:description" content="在ArcToolbox中有個 「Create Custom Geographic Transformation」 工具，可以提供使用者自訂座標系統轉換參數。台灣的使用者可以透過該工具自訂TWD67、TWD97、WGS84三種常見座標系統的轉換參數，設定好的轉換參數檔案(*.gtf)預設放在以下目錄，使用者可以自行複製到其他電腦使用。">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image2.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image3.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image4.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image2.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image5.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image6.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image7.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image8.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image9.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image10.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image11.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image12.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image13.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image14.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image15.png">
+<meta property="og:updated_time" content="2019-08-02T05:40:18.632Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ArcMap 台灣常見座標轉換流程">
+<meta name="twitter:description" content="在ArcToolbox中有個 「Create Custom Geographic Transformation」 工具，可以提供使用者自訂座標系統轉換參數。台灣的使用者可以透過該工具自訂TWD67、TWD97、WGS84三種常見座標系統的轉換參數，設定好的轉換參數檔案(*.gtf)預設放在以下目錄，使用者可以自行複製到其他電腦使用。">
+<meta name="twitter:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image2.png">
+  <link rel="canonical" href="https://docs.yicong.tw/posts/ArcGIS/ArcMap/cjytpwuuk0000e05gaxf9efa1/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ArcMap 台灣常見座標轉換流程 | How-to系列</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-TW">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/how-to/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How-to系列</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">How-to Section</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切換導航欄">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/how-to/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首頁</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/how-to/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>標籤</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/how-to/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分類</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/how-to/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>文章列表</a>
+
+  </li>
+    </ul>
+    
+
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://docs.yicong.tw/how-to/posts/ArcGIS/ArcMap/cjytpwuuk0000e05gaxf9efa1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yi-Cong, Kuo">
+      <meta itemprop="description" content="How-to系列">
+      <meta itemprop="image" content="/how-to/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How-to系列">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">ArcMap 台灣常見座標轉換流程
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+
+              
+                
+              
+
+              <time title="創建時間：2019-07-26 14:11:35" itemprop="dateCreated datePublished" datetime="2019-07-26T14:11:35+08:00">2019-07-26</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新於</span>
+                
+                <time title="修改時間：2019-08-02 13:40:18" itemprop="dateModified" datetime="2019-08-02T13:40:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/how-to/categories/ArcGIS/" itemprop="url" rel="index"><span itemprop="name">ArcGIS</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/how-to/categories/ArcGIS/ArcMap/" itemprop="url" rel="index"><span itemprop="name">ArcMap</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在ArcToolbox中有個 「<strong>Create Custom Geographic Transformation</strong>」 工具，可以提供使用者自訂座標系統轉換參數。台灣的使用者可以透過該工具自訂TWD67、TWD97、WGS84三種常見座標系統的轉換參數，設定好的轉換參數檔案(*.gtf)預設放在以下目錄，使用者可以自行複製到其他電腦使用。</p>
+<a id="more"></a>
+
+<p><strong>C:\Users\&lt;user&gt;\AppData\Roaming\ESRI\Desktop&lt;版本&gt;\ArcToolbox \CustomTransformations</strong></p>
+<p>設定完畢之後，定義為TWD67、TWD97、WGS84座標系統的地理資料，就可以使用 「<strong>Project</strong>」 工具，套用設定好的轉換參數進行座標系統轉換。因此使用ArcMap進行座標轉換流程可分為以下兩大步驟：</p>
+<p>1.使用 「Create Custom Geographic Transformation」 建立轉換公式</p>
+<p>2.使用 「Project」 對地理資料進行座標系統轉換</p>
+<p>以下將針對上述兩步驟進行詳述。</p>
+<h2 id="建立轉換公式"><a href="#建立轉換公式" class="headerlink" title="建立轉換公式"></a>建立轉換公式</h2><h3 id="建立TWD67-–-TWD97-座標轉換參數"><a href="#建立TWD67-–-TWD97-座標轉換參數" class="headerlink" title="建立TWD67 – TWD97 座標轉換參數"></a>建立TWD67 – TWD97 座標轉換參數</h3><ol>
+<li><p>在ArcToolbox中開啟 「Create Custom Geographic Transformation」 工具，工具位於<strong>Data Management Tools</strong> &gt; <strong>Projections and Transformations</strong>底下</p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image2.png" alt></p>
+</li>
+<li><p>依照以下資料輸入對應的參數值，並點選 「OK」 即可建立完成</p>
+<table>
+<thead>
+<tr>
+<th>參數名稱</th>
+<th>參數值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Geographic Transformation Name</td>
+<td>TWD67 – TWD97</td>
+</tr>
+<tr>
+<td>Input Geographic Coordinate System</td>
+<td>TWD_1967_TM_Taiwan</td>
+</tr>
+<tr>
+<td>Output Geographic Coordinate System</td>
+<td>TWD_1997_TM_Taiwan</td>
+</tr>
+<tr>
+<td>Method</td>
+<td>Coordinate Frame</td>
+</tr>
+</tbody></table>
+<p>【轉換參數】</p>
+<table>
+<thead>
+<tr>
+<th>X Axis Translation (meters)</th>
+<th>X軸平移量(公尺)</th>
+<th>730.160</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Y Axis Translation (meters)</td>
+<td>Y軸平移量(公尺)</td>
+<td>346.212</td>
+</tr>
+<tr>
+<td>Z Axis Translation (meters)</td>
+<td>Z軸平移量(公尺)</td>
+<td>472.186</td>
+</tr>
+<tr>
+<td>X Axis Rotation (seconds)</td>
+<td>X軸旋轉量(秒)</td>
+<td>7.968009465325332199694565793688</td>
+</tr>
+<tr>
+<td>Y Axis Rotation (seconds)</td>
+<td>Y軸旋轉量(秒)</td>
+<td>3.5498173155125282722429064796627</td>
+</tr>
+<tr>
+<td>Z Axis Rotation (seconds)</td>
+<td>Z軸旋轉量(秒)</td>
+<td>0.40634166830677981965825251394163</td>
+</tr>
+<tr>
+<td>Scale Difference (ppm)</td>
+<td>尺度參數</td>
+<td>0.99998180</td>
+</tr>
+</tbody></table>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image3.png" alt></p>
+</li>
+</ol>
+<h3 id="轉換方法與參數說明"><a href="#轉換方法與參數說明" class="headerlink" title="轉換方法與參數說明"></a>轉換方法與參數說明</h3><p>本文所提及的轉換方法是根據Help中的說明，Coordinate Frame法與台灣地區常用的Bursa-Wolf法在程式引擎當中是一樣的，所以在設定時選擇Coordinate Frame法。</p>
+<p>  <img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image4.png" alt></p>
+<p>轉換參數則是使用史天元老師等人於<strong>測量工程第41卷第3期</strong>所發表的 「TWD67與TWD97大地基準轉換方法研究」 一文中所提及的七參數Bursa-Wolf基準轉換參數，並將旋轉量單位徑換算為秒（因為Create Custom Geographic Transformation工具需要輸入秒）後所得的數值。在 「TWD67與TWD97大地基準轉換方法研究」 一文中，有提到<strong>經計算所得的七參數會有誤差，因此轉換結果也會有誤差</strong>。</p>
+<h3 id="建立TWD97-–-WGS84-座標轉換參數"><a href="#建立TWD97-–-WGS84-座標轉換參數" class="headerlink" title="建立TWD97 – WGS84 座標轉換參數"></a>建立TWD97 – WGS84 座標轉換參數</h3><ol>
+<li><p>在ArcToolbox中開啟 「Create Custom Geographic Transformation」 工具，工具位於<strong><em>Data Management Tools</em> &gt; <em>Projections and Transformations</em></strong>底下</p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image2.png" alt></p>
+</li>
+<li><p>依照以下資料輸入對應的參數值，並點選 「OK」 即可建立完成</p>
+<table>
+<thead>
+<tr>
+<th>參數名稱</th>
+<th>參數值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Geographic Transformation Name</td>
+<td>TWD97 – WGS84</td>
+</tr>
+<tr>
+<td>Input Geographic Coordinate System</td>
+<td>TWD_1997_TM_Taiwan</td>
+</tr>
+<tr>
+<td>Output Geographic Coordinate System</td>
+<td>GCS_WGS_1984</td>
+</tr>
+<tr>
+<td>Method</td>
+<td>GEOCENTRIC_TRANSLATION</td>
+</tr>
+</tbody></table>
+<p>【轉換參數】</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>X Axis Translation (meters)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Y Axis Translation (meters)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Z Axis Translation (meters)</td>
+<td>0</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<h3 id="轉換方法與參數說明-1"><a href="#轉換方法與參數說明-1" class="headerlink" title="轉換方法與參數說明"></a>轉換方法與參數說明</h3><p>由EPSG 7.1版資料庫中查詢得知TWD97與WGS84的轉換方式名稱為 「TWD97 to WGS84」 ，編號是 「3830」 ，使用地區為 「台灣，中華民國，近陸與近海，台灣島、澎湖（澎湖群島）島」 ，轉換精度為 「1」 公尺。</p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image5.png" alt></p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image6.png" alt></p>
+<p>註記當中說明了 「近似值有正負一公尺的水準，假設TWD97近似於WGS84的話」 。資料來源為 「OGP（International Association of Oil &amp; Gas producers，國際油氣製造業協會）。</p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image7.png" alt></p>
+<p>座標轉換方法名稱 「地理中心轉移」 。轉換參數有三個， 「X軸轉移為0」 、 「Y軸轉移為0」 、 「Z軸轉移為0」 ，且該轉換是可進行逆向轉換的。</p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image8.png" alt></p>
+<p>由以上描述內容可得，TWD97經緯度基本上等同於WGS84經緯度，因為X軸、Y軸、Z軸的平移皆為0</p>
+<h2 id="座標轉換"><a href="#座標轉換" class="headerlink" title="座標轉換"></a>座標轉換</h2><ol>
+<li><p>在ArcToolbox中開啟 「Project」 工具，工具位於 <strong><em>Data Management Tools \ Projections and Transformations</em></strong> 底下</p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image9.png" alt></p>
+</li>
+<li><p>只要 「Input Coordinate System」 與 「Output Coordinate System」 互為<code>TWD67</code>、<code>TWD97</code>、<code>WGS84</code>，就可以在 「Geographic Transformation」 的下拉選單中，選擇建立好的轉換公式。</p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image10.png" alt></p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image11.png" alt></p>
+</li>
+<li><p>按下 「OK」 完成座標轉換</p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image12.png" alt></p>
+</li>
+</ol>
+<h3 id="在ArcMap中加入不同座標系統的地理資料"><a href="#在ArcMap中加入不同座標系統的地理資料" class="headerlink" title="在ArcMap中加入不同座標系統的地理資料"></a>在ArcMap中加入不同座標系統的地理資料</h3><p>使用ArcMap時如果加入不同座標系統的地理資料，ArcMap一般會跳出警告訊息，如下圖。</p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image13.png" alt></p>
+<p>如果此時按下 「Transformation」 按鈕，也可以指定要使用的轉換參數</p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image14.png" alt></p>
+<h2 id="TWD97與TWD67轉換結果比較"><a href="#TWD97與TWD67轉換結果比較" class="headerlink" title="TWD97與TWD67轉換結果比較"></a>TWD97與TWD67轉換結果比較</h2><p>當比例尺要放到很大，會發現TWD97與TWD67地理資料會有誤差。利用 「Measure」 工具量測，視地區不同，誤差約一公尺左右。</p>
+<p><img src="/how-to/media/ArcGIS/ArcMap-%E5%8F%B0%E7%81%A3%E5%B8%B8%E8%A6%8B%E5%BA%A7%E6%A8%99%E8%BD%89%E6%8F%9B%E6%B5%81%E7%A8%8B/image15.png" alt></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/how-to/tags/座標轉換/" rel="tag"># 座標轉換</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/how-to/posts/PostgreSQL/cjytpwuv30002e05gk2gapmiv/" rel="next" title="使用免安裝版的PostgresSQL建立空間資料庫">
+                <i class="fa fa-chevron-left"></i> 使用免安裝版的PostgresSQL建立空間資料庫
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概要
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Yi-Cong, Kuo</p>
+  <div class="site-description motion-element" itemprop="description">How-to系列</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/how-to/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/how-to/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分類</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/how-to/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">標籤</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#建立轉換公式"><span class="nav-number">1.</span> <span class="nav-text">建立轉換公式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建立TWD67-–-TWD97-座標轉換參數"><span class="nav-number">1.1.</span> <span class="nav-text">建立TWD67 – TWD97 座標轉換參數</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#轉換方法與參數說明"><span class="nav-number">1.2.</span> <span class="nav-text">轉換方法與參數說明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立TWD97-–-WGS84-座標轉換參數"><span class="nav-number">1.3.</span> <span class="nav-text">建立TWD97 – WGS84 座標轉換參數</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#轉換方法與參數說明-1"><span class="nav-number">1.4.</span> <span class="nav-text">轉換方法與參數說明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#座標轉換"><span class="nav-number">2.</span> <span class="nav-text">座標轉換</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在ArcMap中加入不同座標系統的地理資料"><span class="nav-number">2.1.</span> <span class="nav-text">在ArcMap中加入不同座標系統的地理資料</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TWD97與TWD67轉換結果比較"><span class="nav-number">3.</span> <span class="nav-text">TWD97與TWD67轉換結果比較</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yi-Cong, Kuo</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/how-to/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/how-to/lib/mediumzoom/medium-zoom.min.js"></script>
+  <script src="/how-to/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/how-to/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/how-to/js/utils.js?v=7.3.0"></script>
+  <script src="/how-to/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/how-to/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/how-to/js/scrollspy.js?v=7.3.0"></script>
+<script src="/how-to/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/how-to/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
