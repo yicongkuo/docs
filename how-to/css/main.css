@@ -1167,20 +1167,6 @@ pre .javascript .function {
   display: inline-block;
   transform: rotate(30deg);
 }
-.use-motion .post-block,
-.use-motion .pagination,
-.use-motion .comments {
-  opacity: 0;
-}
-.use-motion .post-header {
-  opacity: 0;
-}
-.use-motion .post-body {
-  opacity: 0;
-}
-.use-motion .collection-title {
-  opacity: 0;
-}
 .posts-expand {
   padding-top: 40px;
 }
@@ -1513,7 +1499,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #957970;
+  background: #ebff9f;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
