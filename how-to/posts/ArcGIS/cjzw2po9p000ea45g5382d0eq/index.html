@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/how-to/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/how-to/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/how-to/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/how-to/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/how-to/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/how-to/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/how-to/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: true,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/how-to/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '複製',
+      copy_success: '複製成功',
+      copy_failure: '複製失敗'
+    }
+  };
+</script>
+
+  <meta name="description" content="一、 通用版電子地圖ArcGIS封裝檔簡介通用版電子地圖ArcGIS封裝檔是國土測繪中心製作公開的資料，允許使用者在電腦、行動裝置上離線瀏覽地圖。下載來的檔案解壓縮後，目錄結構會類似下圖，此為ArcGIS Cache Service的檔案結構。    由於國土測繪沒有附上Cache Service的圖磚定義檔案(Conf.xml與conf.cdi)，所以使用者需要自己建立，或是直接下載已經建立好的">
+<meta name="keywords" content="通用版電子地圖,ArcGIS封裝檔">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通用版電子地圖ArcGIS封裝檔使用方式">
+<meta property="og:url" content="https://docs.yicong.tw/posts/ArcGIS/cjzw2po9p000ea45g5382d0eq/index.html">
+<meta property="og:site_name" content="How-to系列">
+<meta property="og:description" content="一、 通用版電子地圖ArcGIS封裝檔簡介通用版電子地圖ArcGIS封裝檔是國土測繪中心製作公開的資料，允許使用者在電腦、行動裝置上離線瀏覽地圖。下載來的檔案解壓縮後，目錄結構會類似下圖，此為ArcGIS Cache Service的檔案結構。    由於國土測繪沒有附上Cache Service的圖磚定義檔案(Conf.xml與conf.cdi)，所以使用者需要自己建立，或是直接下載已經建立好的">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/01/image1.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image1.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image2.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image3.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image4.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image5.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image6.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image7.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image8.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image9.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image10.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image11.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image12.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image13.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image14.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image15.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image16.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image17.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image18.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image19.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image20.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image21.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image22.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image23.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image24.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image25.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image26.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image27.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image28.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image29.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image30.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image31.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image32.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image1.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image2.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image3.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image4.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image5.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image6.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image7.png">
+<meta property="og:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image8.png">
+<meta property="og:updated_time" content="2019-08-05T02:02:51.041Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通用版電子地圖ArcGIS封裝檔使用方式">
+<meta name="twitter:description" content="一、 通用版電子地圖ArcGIS封裝檔簡介通用版電子地圖ArcGIS封裝檔是國土測繪中心製作公開的資料，允許使用者在電腦、行動裝置上離線瀏覽地圖。下載來的檔案解壓縮後，目錄結構會類似下圖，此為ArcGIS Cache Service的檔案結構。    由於國土測繪沒有附上Cache Service的圖磚定義檔案(Conf.xml與conf.cdi)，所以使用者需要自己建立，或是直接下載已經建立好的">
+<meta name="twitter:image" content="https://docs.yicong.tw/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/01/image1.png">
+  <link rel="canonical" href="https://docs.yicong.tw/posts/ArcGIS/cjzw2po9p000ea45g5382d0eq/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>通用版電子地圖ArcGIS封裝檔使用方式 | How-to系列</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-TW">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/how-to/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">How-to系列</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">How-to Section</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切換導航欄">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/how-to/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首頁</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/how-to/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>標籤</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/how-to/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分類</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/how-to/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>文章列表</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜尋</a>
+        </li>
+      
+    </ul>
+    
+
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜尋..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://docs.yicong.tw/how-to/posts/ArcGIS/cjzw2po9p000ea45g5382d0eq/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yi-Cong, Kuo">
+      <meta itemprop="description" content="How-to系列">
+      <meta itemprop="image" content="/how-to/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="How-to系列">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">通用版電子地圖ArcGIS封裝檔使用方式
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+
+              
+                
+              
+
+              <time title="創建時間：2019-08-02 17:07:35" itemprop="dateCreated datePublished" datetime="2019-08-02T17:07:35+08:00">2019-08-02</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新於</span>
+                
+                <time title="修改時間：2019-08-05 10:02:51" itemprop="dateModified" datetime="2019-08-05T10:02:51+08:00">2019-08-05</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分類於</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/how-to/categories/ArcGIS/" itemprop="url" rel="index"><span itemprop="name">ArcGIS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、-通用版電子地圖ArcGIS封裝檔簡介"><a href="#一、-通用版電子地圖ArcGIS封裝檔簡介" class="headerlink" title="一、 通用版電子地圖ArcGIS封裝檔簡介"></a>一、 通用版電子地圖ArcGIS封裝檔簡介</h2><p>通用版電子地圖ArcGIS封裝檔是國土測繪中心製作公開的資料，允許使用者在電腦、行動裝置上離線瀏覽地圖。下載來的檔案解壓縮後，目錄結構會類似下圖，此為ArcGIS Cache Service的檔案結構。</p>
+<p>  <img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/01/image1.png" alt></p>
+<p>由於國土測繪沒有附上Cache Service的圖磚定義檔案(Conf.xml與conf.cdi)，所以使用者需要自己建立，或是直接<a href="https://drive.google.com/drive/folders/1BiopRK44EYJUWZTo1gX_88_2-hAQSbix?usp=sharing" target="_blank" rel="noopener">下載已經建立好的定義檔</a>，才能在ArcMap或是對應的軟體中開啟地圖資料。<a id="more"></a></p>
+<p>接下來會介紹如何自己建立圖磚定義檔案，並說明建立圖磚定義檔時，需要注意那些細節。</p>
+<h2 id="二、-建立圖磚定義檔需要注意的細節"><a href="#二、-建立圖磚定義檔需要注意的細節" class="headerlink" title="二、 建立圖磚定義檔需要注意的細節"></a>二、 建立圖磚定義檔需要注意的細節</h2><p>圖磚定義檔建立時，需要確定以下幾件事情：</p>
+<ol>
+<li><strong>圖層座標系統。</strong> <br>通用版電子地圖使用Web Mercator投影座標系統(EPSG:3857)。<br><br></li>
+<li><strong>每一層(Level)的裁切比例尺與解析度。</strong> <br>本文所使用的通用版電子地圖是依據Google Map的比例進行裁切。<br><br></li>
+<li><strong>圖片格式</strong>。<br>本文通用版電子地圖使用<code>jpg</code>格式作為圖磚的圖片格式。<br><br></li>
+<li><strong>圖磚儲存方式</strong>。<br>圖磚儲存方式可分為<code>EXPLODED</code>或是<code>COMPACT</code>兩種，EXPLODED直接將每張圖片儲存在資料夾內，COMPACT則是將一個的圖片壓縮成一個bundle檔案儲存。本文中的通用版電子地圖採用EXPLODED方式儲存圖片。</li>
+</ol>
+<p>了解以上幾件事情後，就可以按照接下來的步驟，瀏覽電子地圖的內容囉。</p>
+<h2 id="三、-電子地圖使用方法：發佈為ArcGIS-Server服務"><a href="#三、-電子地圖使用方法：發佈為ArcGIS-Server服務" class="headerlink" title="三、 電子地圖使用方法：發佈為ArcGIS Server服務"></a>三、 電子地圖使用方法：發佈為ArcGIS Server服務</h2><h4 id="《1》-下載圖磚圖片檔案"><a href="#《1》-下載圖磚圖片檔案" class="headerlink" title="《1》 下載圖磚圖片檔案"></a>《1》 下載圖磚圖片檔案</h4><ol>
+<li><p>到國土測繪中心網站<a href="https://maps.nlsc.gov.tw/" target="_blank" rel="noopener"><a href="https://maps.nlsc.gov.tw/" target="_blank" rel="noopener">https://maps.nlsc.gov.tw/</a></a></p>
+</li>
+<li><p>點選下載專區</p>
+</li>
+<li><p>找到以下兩個清單項目，點選右邊下載連結即可下載</p>
+<p><code>[政府開放資料]臺灣通用電子地圖(套疊等高線)圖磚封裝檔(GIS用)</code></p>
+<p><code>[政府開放資料]臺灣通用電子地圖(不含等高線)圖磚封裝檔(GIS用)</code></p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image1.png" alt></p>
+</li>
+</ol>
+<h4 id="《2》-建立Web-Mercator座標系統的地圖圖框"><a href="#《2》-建立Web-Mercator座標系統的地圖圖框" class="headerlink" title="《2》 建立Web Mercator座標系統的地圖圖框"></a>《2》 建立Web Mercator座標系統的地圖圖框</h4><ol>
+<li><p>開啟ArcMap</p>
+</li>
+<li><p>在Table Of Contents視窗中，對Layers圖框按滑鼠右鍵，選擇Properties</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image2.png" alt></p>
+</li>
+<li><p>定義地圖框坐標系統</p>
+<p>A. 在Data Frame Properties視窗中，切換到<code>Coordinate System</code><br>B. 在搜尋列中，輸入<code>web</code>，然後點選右邊的搜尋按鈕<br>C. 找到如下圖所示的座標系統定義檔，然後按<code>確定</code></p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image3.png" alt></p>
+</li>
+</ol>
+<h4 id="《3》-產生台灣全島範圍向量圖徵-Featrue-Class"><a href="#《3》-產生台灣全島範圍向量圖徵-Featrue-Class" class="headerlink" title="《3》 產生台灣全島範圍向量圖徵 (Featrue Class)"></a>《3》 產生台灣全島範圍向量圖徵 (Featrue Class)</h4><ol>
+<li><p>加入 Streets底圖</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image4.png" alt><br><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image5.png" alt></p>
+</li>
+<li><p>調整地圖範圍涵蓋台灣全島</p>
+</li>
+<li><p>啟用<code>Draw</code>工具列</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image6.png" alt></p>
+</li>
+<li><p>使用矩形工具，在地圖上繪製台灣本島範圍</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image7.png" alt><br><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image8.png" alt></p>
+</li>
+<li><p>使用<code>Convert Graphics To Features</code>工具，將矩形圖形轉換成Feature Class</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image9.png" alt></p>
+</li>
+<li><p>工具參數設定如下，本文中輸出的Feature Class命名為TaiwanExtent</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image10.png" alt></p>
+</li>
+<li><p>將TaiwanExtent圖層加入圖框中</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image11.png" alt></p>
+</li>
+<li><p>移除稍早所繪製的矩形圖形</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image12.png" alt></p>
+</li>
+</ol>
+<h4 id="《4》-產生地圖文件檔案mxd"><a href="#《4》-產生地圖文件檔案mxd" class="headerlink" title="《4》 產生地圖文件檔案mxd"></a>《4》 產生地圖文件檔案mxd</h4><ol>
+<li><p>移除底圖，TOC視窗中僅留下TaiwanExtent圖層</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image13.png" alt></p>
+</li>
+<li><p>將地圖縮放至TaiwanExtent圖層範圍</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image14.png" alt></p>
+</li>
+<li><p>將TaiwanExtent圖層邊框與填充色設為透明</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image15.png" alt></p>
+</li>
+<li><p>儲存地圖，本文將地圖文件檔取名為NLSC_Basemap.mxd</p>
+</li>
+</ol>
+<h4 id="《5》-發佈地圖快取服務"><a href="#《5》-發佈地圖快取服務" class="headerlink" title="《5》 發佈地圖快取服務"></a>《5》 發佈地圖快取服務</h4><ol>
+<li><p>新增ArcGIS for Server連線，需要Publish以上的權限</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image16.png" alt></p>
+</li>
+<li><p>上方工具列中，點選File &gt; Share As &gt; Service</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image17.png" alt></p>
+</li>
+<li><p>選擇<code>Publish Service</code>，點選<code>下一步</code></p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image18.png" alt></p>
+</li>
+<li><p>選擇稍早建立的ArcGIS Server連線，並輸入此次要發佈的服務名稱。此名稱建議使用英文，本文使用<code>NLSC_Basemap</code>作為此服務名稱。然後點選下一步。</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image19.png" alt></p>
+</li>
+<li><p>選擇GIS服務要放在哪一個目錄內，本文將放在Basemap目錄內。然後點選Continue。</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image20.png" alt></p>
+</li>
+<li><p><strong>設定Caching選項</strong></p>
+<p>A.  左側視窗中，選擇 <code>Caching</code><br>B.  右側視窗中，選擇 <code>Using tiles from a cache</code><br>C.  快取圖層定義檔設成 <code>ArcGIS Online/Bing Maps/Google Maps</code><br>D.  設定要產生的圖磚層數<br>E.  選擇手動產生圖磚</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image21.png" alt></p>
+</li>
+<li><p><strong>設定Caching &gt; <code>Advanced Settings</code>選項</strong></p>
+<p>A.  由於國土測繪中心所給定的圖片為jpg格式，所以此處將圖片格式設定為jpeg<br>B.  點選<code>Advanced</code>按鈕，開啟進階設定</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image22.png" alt></p>
+<p>C.  由於國土測繪中心使用每一個圖磚以一張圖片的方式，儲存在資料夾中，故此處將圖磚儲存方式設定為<code>EXPLODED</code>。</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image23.png" alt></p>
+<p>D.  完成Caching設定後，在Service Editor中點選<code>Analyze</code>按鈕，檢查服務設定上是否有錯誤或需要改進的地方。</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image24.png" alt></p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image25.png" alt></p>
+<p>E.  如果沒有出現Error，則在Service Editor中，點選<code>Publish</code>按鈕發佈服務</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image26.png" alt></p>
+<p>F.  發佈過程中，出現要將TaiwanExtent這筆資料複製到主機上，點選<code>OK</code>繼續發佈過程</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image27.png" alt></p>
+<p>G.  出現服務發佈成功對話視窗，點選<code>OK</code>完成服務發佈。</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image28.png" alt></p>
+</li>
+</ol>
+<h4 id="《6》-複製圖磚檔案到ArcGIS-Server主機上"><a href="#《6》-複製圖磚檔案到ArcGIS-Server主機上" class="headerlink" title="《6》 複製圖磚檔案到ArcGIS Server主機上"></a>《6》 複製圖磚檔案到ArcGIS Server主機上</h4><ol>
+<li><p>連線到ArcGIS Server主機</p>
+</li>
+<li><p>預設情況下，在<code>C:\\arcgisserver\\directories\\arcgiscache</code>中，會找到剛才發佈的快取服務存放圖磚的資料夾位置。</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image29.png" alt></p>
+</li>
+<li><p>點開此服務資料夾至Layers資料夾內，會看到如下圖的資料夾結構。</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image30.png" alt></p>
+</li>
+<li><p>將從國土測繪中心網站下載的圖磚檔案，複製到<code>_alllayers</code>資料夾內即可。</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image31.png" alt></p>
+</li>
+<li><p>從瀏覽器上瀏覽服務，即可看到通用版地圖。</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/03/image32.png" alt></p>
+</li>
+</ol>
+<h2 id="四、-使用方法：透過ArcMap瀏覽電子地圖"><a href="#四、-使用方法：透過ArcMap瀏覽電子地圖" class="headerlink" title="四、 使用方法：透過ArcMap瀏覽電子地圖"></a>四、 使用方法：透過ArcMap瀏覽電子地圖</h2><h4 id="《1》-建立ArcGIS-Raster-Dataset資料夾結構"><a href="#《1》-建立ArcGIS-Raster-Dataset資料夾結構" class="headerlink" title="《1》 建立ArcGIS Raster Dataset資料夾結構"></a>《1》 建立ArcGIS Raster Dataset資料夾結構</h4><ol>
+<li><p>下載圖磚定義檔<a href="https://drive.google.com/open?id=1sYqZG7zAz0TeG3brK7dHLuQpyx25oD5Y" target="_blank" rel="noopener">conf.cdi</a>與<a href="https://drive.google.com/file/d/1wmQRCnEzHaw0I2Ch5jPUNdlMoo0XSqby/view?usp=sharing" target="_blank" rel="noopener">Conf.xml</a></p>
+</li>
+<li><p>建立一個名稱為<code>Layers</code>的資料夾</p>
+</li>
+<li><p>將<code>conf.cdi</code>與<code>Conf.xml</code>複製到Layers目錄內</p>
+</li>
+<li><p>在Layers目錄中，建立一個名為 <code>_alllayers</code> 的資料夾</p>
+</li>
+<li><p>把下載來的通用版電子地圖L0 ~ L15的資料夾移動到<code>_alllayers</code>資料夾內</p>
+</li>
+<li><p>目前Layers資料夾目錄內容應該如下圖所示</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image1.png" alt></p>
+</li>
+</ol>
+<h4 id="《2》-開啟ArcMap瀏覽地圖"><a href="#《2》-開啟ArcMap瀏覽地圖" class="headerlink" title="《2》 開啟ArcMap瀏覽地圖"></a>《2》 開啟ArcMap瀏覽地圖</h4><ol>
+<li><p>開啟ArcMap</p>
+</li>
+<li><p>在Catalog視窗中，連線存放Layers資料夾的根目錄，此時會看到Layers為一個Raster Dataset格式</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image2.png" alt></p>
+</li>
+<li><p>將Layers拖曳至Table of Content視窗中，ArcMap會呈現地圖內容。<br><strong>不過目前地圖框縮放比例與圖磚裁切比例不符，因此圖層在顯示上會產生模糊的情況。</strong></p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image3.png" alt></p>
+</li>
+<li><p><strong>調整第圖框的縮放比例，讓圖層可以使用正確比例顯示。</strong></p>
+<p>A.  點選比例尺下拉選單，選擇<code>Customize The List…</code></p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image4.png" alt></p>
+<p>B.  點選<code>Delete All</code>刪除現有顯示比例</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image5.png" alt></p>
+<p>C.  點選<code>Load ArcGIS Online/Bing Maps/Google Maps</code>載入ArcGIS Online底圖圖磚比例</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image6.png" alt></p>
+<p>D.  將<code>Only display these scales when zooming</code>打勾，並按<code>確定</code></p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image7.png" alt></p>
+<p>E.  現在通用版電子地圖會清楚地呈現囉！</p>
+<p><img src="/how-to/media/ArcGIS/ArcGIS-%E9%80%8F%E9%81%8EArcGIS%E4%BD%BF%E7%94%A8%E9%80%9A%E7%94%A8%E7%89%88%E9%9B%BB%E5%AD%90%E5%9C%B0%E5%9C%96ArcGIS%E5%B0%81%E8%A3%9D%E6%AA%94/04/image8.png" alt></p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/how-to/tags/通用版電子地圖/" rel="tag"># 通用版電子地圖</a>
+          
+            <a href="/how-to/tags/ArcGIS封裝檔/" rel="tag"># ArcGIS封裝檔</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/how-to/posts/ArcGIS/ArcMap/cjzw2po4w0000a45gz9rfzrmf/" rel="next" title="ArcMap 台灣常見座標轉換流程">
+                <i class="fa fa-chevron-left"></i> ArcMap 台灣常見座標轉換流程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概要
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Yi-Cong, Kuo</p>
+  <div class="site-description motion-element" itemprop="description">How-to系列</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/how-to/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/how-to/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分類</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/how-to/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">標籤</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、-通用版電子地圖ArcGIS封裝檔簡介"><span class="nav-number">1.</span> <span class="nav-text">一、 通用版電子地圖ArcGIS封裝檔簡介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-建立圖磚定義檔需要注意的細節"><span class="nav-number">2.</span> <span class="nav-text">二、 建立圖磚定義檔需要注意的細節</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、-電子地圖使用方法：發佈為ArcGIS-Server服務"><span class="nav-number">3.</span> <span class="nav-text">三、 電子地圖使用方法：發佈為ArcGIS Server服務</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#《1》-下載圖磚圖片檔案"><span class="nav-number">3.0.1.</span> <span class="nav-text">《1》 下載圖磚圖片檔案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#《2》-建立Web-Mercator座標系統的地圖圖框"><span class="nav-number">3.0.2.</span> <span class="nav-text">《2》 建立Web Mercator座標系統的地圖圖框</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#《3》-產生台灣全島範圍向量圖徵-Featrue-Class"><span class="nav-number">3.0.3.</span> <span class="nav-text">《3》 產生台灣全島範圍向量圖徵 (Featrue Class)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#《4》-產生地圖文件檔案mxd"><span class="nav-number">3.0.4.</span> <span class="nav-text">《4》 產生地圖文件檔案mxd</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#《5》-發佈地圖快取服務"><span class="nav-number">3.0.5.</span> <span class="nav-text">《5》 發佈地圖快取服務</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#《6》-複製圖磚檔案到ArcGIS-Server主機上"><span class="nav-number">3.0.6.</span> <span class="nav-text">《6》 複製圖磚檔案到ArcGIS Server主機上</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、-使用方法：透過ArcMap瀏覽電子地圖"><span class="nav-number">4.</span> <span class="nav-text">四、 使用方法：透過ArcMap瀏覽電子地圖</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#《1》-建立ArcGIS-Raster-Dataset資料夾結構"><span class="nav-number">4.0.1.</span> <span class="nav-text">《1》 建立ArcGIS Raster Dataset資料夾結構</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#《2》-開啟ArcMap瀏覽地圖"><span class="nav-number">4.0.2.</span> <span class="nav-text">《2》 開啟ArcMap瀏覽地圖</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yi-Cong, Kuo</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+  <script src="/how-to/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/how-to/lib/mediumzoom/medium-zoom.min.js"></script>
+  <script src="/how-to/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/how-to/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/how-to/js/utils.js?v=7.3.0"></script>
+  <script src="/how-to/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/how-to/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/how-to/js/scrollspy.js?v=7.3.0"></script>
+<script src="/how-to/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/how-to/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/how-to/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
